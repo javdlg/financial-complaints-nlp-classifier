@@ -14,28 +14,3 @@ This project leverages **Natural Language Processing (NLP)** to automate the cla
 * **Libraries:** Pandas, Scikit-learn, NLTK, Spacy, Streamlit.
 * **Visualization:** Matplotlib, Seaborn, Power BI.
 * **Dataset:** Customer Support Ticket Dataset (Kaggle).
-
----
-
-### 🏠 Project Structure:
-
-.
-├── .gitignore               # Files and folders to be ignored by Git
-├── README.md                # Project documentation and overview
-├── requirements.txt         # Project dependencies and libraries
-├── data/
-│   ├── raw/                 # Original Kaggle dataset (immutable)
-│   ├── processed/           # Cleaned and preprocessed data for modeling
-│   └── external/            # Additional resources (dictionaries, etc.)
-├── notebooks/               # Jupyter notebooks for experimentation
-│   ├── 1_EDA_Exploratory.ipynb
-│   ├── 2_Preprocessing_Normalization.ipynb
-│   └── 3_Modeling_Evaluation.ipynb
-├── src/                     # Modular Python scripts for production
-│   ├── __init__.py
-│   ├── preprocessing.py     # Text cleaning and normalization functions
-│   └── visualization.py     # Custom plotting functions for reports
-├── app/                     # Web application (Demo)
-│   └── main.py              # Streamlit dashboard script
-└── reports/                 # Project insights and academic documentation
-    └── project_report.pdf   # Final technical report
