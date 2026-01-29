@@ -17,7 +17,7 @@ This project leverages **Natural Language Processing (NLP)** to automate the cla
 
 ---
 
-### 🏠 Proyect Structure:
+### 🏠 Project Structure:
 
 ├── .gitignore             # Ignore venv, __pycache__, datasets/
 ├── README.md              
