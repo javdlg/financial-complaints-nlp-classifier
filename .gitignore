@@ -1,1 +1,13 @@
+# Virtual environments
 venv/
+.env
+
+# Python (temporal files)
+__pycache__/
+*.py[cod]
+
+# Data (optional)
+data/raw/*.csv
+
+# VS Code
+.vscode/
