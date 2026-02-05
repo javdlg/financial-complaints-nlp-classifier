@@ -1,3 +1,4 @@
+from pydoc import doc
 import spacy
 import re
 import pandas as pd
@@ -5,10 +6,13 @@ import pandas as pd
 # Load spaCy
 try:
     nlp = spacy.load("en_core_web_sm")
+    print("✅ SpaCy model loaded successfully.")
 except OSError:
-    print("SpaCy model not found. Please run: python -m spacy download en_core_web_sm")
-    # Fallback to prevent immediate crash if not installed
-    nlp = None
+    print("❌ SpaCy model not found. Please run: python -m spacy download en_core_web_sm")
+    print("⚠️ Solution: Execute in your terminal: python -m spacy download en_core_web_sm")
+    # Throw an specific error for stopping the notebook execution
+    raise RuntimeError("SpaCy model 'en_core_web_sm' is not installed.")
+    
 
 def clean_text(text):
     """
@@ -31,20 +35,19 @@ def clean_text(text):
     # 3. Remove HTML tags 
     text = re.sub(r'<.*?>', '', text)
 
-    # 4. Remove special characters and numbers (keep only letters)
-    text = re.sub(r'[a-z\s]', '', text)
+    # 4. Remove special characters but keep numbers and letters
+    text = re.sub(r'[^a-z0-9\s]', '', text)
 
-    # If spaCy is not loaded, return basic cleaned text (safety check)
-    if nlp is None:
-        return text.strip()
-    
     # SpaCy pipeline: Tokenization -> Lemmatization -> Stopwords
     doc = nlp(text)
 
-    # Keep tokens that are NOT stopwords, punctuation and longer than 2 characters
-    clean_tokens = [
-        token.lemma_ for token in doc
-        if not token.is_stop and not token.is_punct and len(token.text) > 2
-    ]
+    clean_tokens = []
+    for token in doc:
+        # Relaxed logic:
+        # - Is not a stopword
+        # - Is not punctuation
+        # - Lenght > 1 (Save 2 letter words as 'pc', 'it', 'ui')
+        if not token.is_stop and not token.is_punct and len(token.text) > 1:
+            clean_tokens.append(token.lemma_)
 
     return " ".join(clean_tokens)
