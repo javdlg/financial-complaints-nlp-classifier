@@ -6,8 +6,15 @@ venv/
 __pycache__/
 *.py[cod]
 
-# Data (optional)
-data/raw/*.csv
+# Ignore Jupyter checkpoints and cache
+.ipynb_checkpoints/
+.cache/
 
 # VS Code
 .vscode/
+
+# Ignore raw data and heavy processed files
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep

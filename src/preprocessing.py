@@ -1,31 +1,27 @@
-from pydoc import doc
 import spacy
 import re
 import pandas as pd
 
-# Load spaCy
+# Load spaCy model with error handling
 try:
     nlp = spacy.load("en_core_web_sm")
-    print("✅ SpaCy model loaded successfully.")
+    print("✅ SpaCy model 'en_core_web_sm' loaded successfully.")
 except OSError:
-    print(
-        "❌ SpaCy model not found. Please run: python -m spacy download en_core_web_sm"
+    raise RuntimeError(
+        "❌ Model not found. Please run: python -m spacy download en_core_web_sm"
     )
-    print(
-        "⚠️ Solution: Execute in your terminal: python -m spacy download en_core_web_sm"
-    )
-    # Throw an specific error for stopping the notebook execution
-    raise RuntimeError("SpaCy model 'en_core_web_sm' is not installed.")
 
 
 def clean_text(text):
     """
-    Applies a complete NLP preprocessing pipeline:
-    1. Lowercasing
-    2. URL and HTML removal
-    3. Special character removal
-    4. Tokenization and Lemmatization (using spaCy)
-    5. Stopwords removal
+    Preprocesses text specifically for the Consumer Complaint Database.
+
+    Pipeline:
+    1. Lowercasing.
+    2. Anonymization Mask Removal ('XXXX').
+    3. URL & HTML removal.
+    4. Non-alphabetic character removal.
+    5. SpaCy Lemmatization & Stopword removal.
     """
     if pd.isna(text) or text == "":
         return ""
@@ -33,56 +29,35 @@ def clean_text(text):
     # 1. Lowercase
     text = str(text).lower()
 
-    # 2. Space normalization (remove extra spaces)
-    text = re.sub(r"\s+", " ", text).strip()
+    # 2. Remove Anonymization Masks (Specific to this dataset)
+    # The dataset uses 'XXXX' to hide personal info. We remove these patterns.
+    text = re.sub(r"x{2,}", "", text)  # Removes 'xx', 'xxx', 'xxxx'
 
     # 3. Remove URLs and HTML tags
-    text = re.sub(r"http\S+|www\S+|https\S+", "", text)
+    text = re.sub(r"http\S+|www\S+|https\S+", "", text, flags=re.MULTILINE)
     text = re.sub(r"<.*?>", "", text)
 
-    # 4. Remove special characters but keep letters
+    # 4. Remove non-alphabetic characters (numbers, punctuation)
+    # We remove numbers because dates/amounts are usually anonymized or irrelevant for sentiment/topic
     text = re.sub(r"[^a-z\s]", "", text)
 
-    # 5. Specific phrase removals based on dataset analysis
-    text = text.replace("have issue productpurchased assist", "")
-    text = text.replace("productpurchased", "")
-    text = text.replace("productpurchase", "")  # Remove variations
+    # 5. Normalize whitespace
+    text = re.sub(r"\s+", " ", text).strip()
 
-    # SpaCy pipeline: Tokenization -> Lemmatization -> Stopwords
+    # 6. SpaCy Processing
     doc = nlp(text)
 
-    # Blacklist of specific thrash words of this dataset
-    custom_stopwords = {
-        "ve",
-        "don",
-        "ll",
-        "assist",
-        "issue",
-        "have",
-        "Having",
-        "has",
-        "had",
-        "productpurchase",
-        "productpurchased",
-        "productprice",
-        "productcost",
-        "productid",
-        "errormessage",
-        "inplist",
-        "threadinfo",
-        "faqhelp",
-        "faq",
-    }
+    # Custom stopwords for banking context
+    # We keep it minimal initially to see what the model learns
+    custom_stopwords = {"ve", "don", "ll", "did", "does"}
 
     clean_tokens = []
     for token in doc:
-        # Filters: No stopwords, no punctuation, length > 1
         if (
             not token.is_stop
             and not token.is_punct
             and len(token.text) > 1
             and token.text not in custom_stopwords
-            and token.lemma_ not in custom_stopwords
         ):
             clean_tokens.append(token.lemma_)
 

@@ -8,3 +8,6 @@ spacy
 wordcloud
 streamlit
 ipykernel
+sentence-transformers
+lightgbm
+xgboost
