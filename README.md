@@ -11,7 +11,7 @@ Leveraging the **US Consumer Complaint Database**, the model processes over **33
 * **Scalable Architecture:** Modularized code (`src/`) separating data engineering from modeling logic.
 * **Class Imbalance Handling:** Strategies to manage dominant categories like Credit Reporting vs. smaller ones like Retail Banking.
 
-### 🛠️ Tech Stack
+## 🛠️ Tech Stack
 * **Language:** Python 3.10+
 * **Libraries:** Pandas, Scikit-learn, NLTK, Spacy, Streamlit.
 * **Visualization:** Matplotlib, Seaborn, Power BI.
