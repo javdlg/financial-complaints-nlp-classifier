@@ -18,7 +18,7 @@ def clean_text(text):
 
     Pipeline:
     1. Lowercasing.
-    2. Anonymization Mask Removal ('XXXX').
+    2. Anonymization mask removal ('XXXX').
     3. URL & HTML removal.
     4. Non-alphabetic character removal.
     5. SpaCy Lemmatization & Stopword removal.
@@ -29,7 +29,7 @@ def clean_text(text):
     # 1. Lowercase
     text = str(text).lower()
 
-    # 2. Remove Anonymization Masks (Specific to this dataset)
+    # 2. Remove anonymization masks (Specific to this dataset)
     # The dataset uses 'XXXX' to hide personal info. We remove these patterns.
     text = re.sub(r"x{2,}", "", text)  # Removes 'xx', 'xxx', 'xxxx'
 
